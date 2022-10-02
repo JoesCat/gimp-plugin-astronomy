@@ -1,0 +1,29 @@
+name: CI
+on: [push,pull_request]
+
+jobs:
+  linux:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        choiceL: [--disable-silent-rules, --enable-silent-rules]
+    steps:
+      - uses: actions/checkout@v2
+      - name: Create configure
+        run: |
+          sudo apt-get update -y
+          sudo apt-get install autoconf automake libtool gcc gettext libfftw3-dev libgimp2.0-dev libgsl-dev texlive-latex-base texlive-fonts-recommended
+          aclocal --force
+          autoconf -f
+          automake --add-missing
+      - name: Choose configure
+        run: ./configure ${{ matrix.choiceL }}
+      - name: Make gimp-plugin-astronomy
+        run: make
+      - name: Test make strip
+        if: matrix.choiceL == '--disable-silent-rules'
+        run: make strip
+# ignore: main.yml trouble processing this distcheck
+#     - name: Test make distcheck
+#       if: matrix.choiceL == '--disable-silent-rules'
+#       run: make distcheck

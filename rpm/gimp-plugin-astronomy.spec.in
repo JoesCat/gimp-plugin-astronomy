@@ -8,9 +8,8 @@ Release:        0
 Summary:        Astronomy plugins for the GIMP graphic editor
 License:        GPLv2+
 Group:          Graphics/Editors and Converters
-
-URL:            http://hennigbuam.de/georg/gimp.html
-Source0:        http://www.hennigbuam.de/georg/downloads/%{name}-%{version}.tar.bz2
+URL:            http://github.com/JoesCat/gimp-plugin-astronomy
+Source0:        http://github.com/JoesCat/gimp-plugin-astronomy/releases/download/%{version}/%{name}-%{version}.tar.bz2
 
 BuildRequires:	autoconf
 BuildRequires:	automake
@@ -39,8 +38,9 @@ synthetic stars distribution or synthetic galaxy images.
 %setup -q
 
 %build
-autoreconf -ivs
-automake
+aclocal --force
+autoconf -f
+automake --add-missing
 %configure
 %make_build
 

@@ -7,12 +7,11 @@ else
 astrodir=${docdir}
 endif
 documentationdocsdir=${astrodir}
-documentationdocs_DATA = \
-	documentation.tex \
-	documentation.pdf
+documentationdocs_DATA = documentation.tex documentation.pdf
 
-documentation.pdf: documentation.tex
-	pdflatex documentation.tex
+# TODO: tex file needs fixing
+# documentation.pdf: documentation.tex
+#	pdflatex documentation.tex
 
 EXTRA_DIST = \
 	align.jpg \

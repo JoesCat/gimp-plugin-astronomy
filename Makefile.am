@@ -32,9 +32,24 @@ EXTRA_DIST = \
 	po/quot.sed \
 	po/remove-potcdate.sed \
 	po/remove-potcdate.sin \
-	po/
 	rpm/gimp-plugin-astronomy.spec.in \
-	rpm/gimp-plugin-astronomy.spec
+	rpm/gimp-plugin-astronomy.spec \
+	scripts/background_gradient_batch.scm \
+	scripts/border_information.scm \
+	scripts/brightness_contrast_batch.scm \
+	scripts/dark_subtraction.scm \
+	scripts/flat_division.scm \
+	scripts/mode_batch.scm \
+	scripts/normalize_batch.scm
+
 nodist_EXTRA_DATA = .git .github
 
 AUTOMAKE_OPTIONS = foreign dist-bzip2
+
+strip:
+	$(STRIP) ${topbuilddir}src/astronomy-alignment
+	$(STRIP) ${topbuilddir}src/astronomy-artificial-galaxy
+	$(STRIP) ${topbuilddir}src/astronomy-artificial-stars
+	$(STRIP) ${topbuilddir}src/astronomy-background-gradient
+	$(STRIP) ${topbuilddir}src/astronomy-merge
+	$(STRIP) ${topbuilddir}src/astronomy-star-rounding

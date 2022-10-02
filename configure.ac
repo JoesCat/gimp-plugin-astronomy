@@ -1,5 +1,5 @@
 # -*- Autoconf -*-
-dnl Process this file with autoreconf -i to produce a configure script.
+dnl Process this file with autoconf -f to produce a configure script.
 
 AC_PREREQ([2.68])
 
@@ -8,14 +8,14 @@ m4_define([plugin_name], [gimp-plugin-astronomy])
 
 dnl These two define the plug-in version number
 m4_define([plugin_major_version], [0])
-m4_define([plugin_minor_version], [10])
+m4_define([plugin_minor_version], [11])
 
 m4_define([plugin_version], [plugin_major_version.plugin_minor_version])
 m4_define([plugin_package_name], [gimp-plugin-astronomy])
 
 AC_INIT([plugin_name],[plugin_version],
-   [[https://github.com/gimp-plugins-justice/gimp-plugin-astronomy/issues/]],[plugin_package_name],
-   [http://www.hennigbuam.de/georg/gimp.html])
+   [https://github.com/JoesCat/gimp-plugin-astronomy/issues/],[plugin_package_name],
+   [https://github.com/JoesCat/gimp-plugin-astronomy])
 
 AC_CONFIG_SRCDIR([src/alignment.c])
 AC_CONFIG_MACRO_DIR([m4])
@@ -23,13 +23,14 @@ AC_CANONICAL_TARGET
 AC_CANONICAL_HOST
 AC_CANONICAL_BUILD
 AC_USE_SYSTEM_EXTENSIONS
-AM_INIT_AUTOMAKE([foreign -Wall])
 AM_MAINTAINER_MODE([enable])
-AM_GNU_GETTEXT_VERSION(0.21)
+AM_GNU_GETTEXT_VERSION
+AM_INIT_AUTOMAKE([foreign -Wall])
 
 m4_ifdef([AM_PROG_AR], [AM_PROG_AR])
 
 AC_PROG_CC
+AC_PROG_CXX
 AC_PROG_SED
 AC_PROG_LN_S
 AC_PROG_MKDIR_P

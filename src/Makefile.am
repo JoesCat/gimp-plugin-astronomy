@@ -2,6 +2,16 @@
 
 ACLOCAL_AMFLAGS=-I m4 ${ACLOCAL}
 
+AM_CPPFLAGS = \
+	-DLOCALEDIR=\""$(LOCALEDIR)"\"	\
+	-DDATADIR=\""$(DATADIR)"\"	\
+	-I$(build_srcdir)		\
+	-I$(top_srcdir)			\
+	@GIMP_CFLAGS@			\
+	-I$(includedir)
+
+LDADD = $(LIBS) $(GSL_LIBS) $(FFTW_LIBS) $(GIMP_LIBS)
+
 bin_PROGRAMS = astronomy-alignment astronomy-merge astronomy-background-gradient astronomy-artificial-stars astronomy-artificial-galaxy astronomy-star-rounding
 
 bindir = ${GIMP_LIBDIR}/plug-ins
@@ -24,20 +34,17 @@ astronomy_artificial_galaxy_SOURCES = \
 astronomy_star_rounding_SOURCES = \
 	star_rounding.c
 
-AM_CPPFLAGS = \
-	-DLOCALEDIR=\""$(LOCALEDIR)"\"	\
-	-DDATADIR=\""$(DATADIR)"\"	\
-	-I$(build_srcdir)		\
-	-I$(top_srcdir)			\
-	@GIMP_CFLAGS@			\
-	-I$(includedir)
-
-LDADD = $(LIBS) $(GSL_LIBS) $(FFTW_LIBS) $(GIMP_LIBS)
-
 EXTRA_DIST = \
 	alignment_autopano.c \
 	plugin-intl.h \
 	artificial_stars_temperature.h
 
 strip:
-	$(STRIP) $(bin_PROGRAMS)
+	$(STRIP) ${builddir}/astronomy-alignment
+	$(STRIP) ${builddir}/astronomy-artificial-galaxy
+	$(STRIP) ${builddir}/astronomy-artificial-stars
+	$(STRIP) ${builddir}/astronomy-background-gradient
+	$(STRIP) ${builddir}/astronomy-merge
+	$(STRIP) ${builddir}/astronomy-star-rounding
+
+	

@@ -3,3 +3,6 @@ gimp-plugin-astronomy (c) 2006-2008 by Georg Hennig <georg.hennig@web.de>, publi
 Some plug-ins simplifying astronomical image processing.
 
 Please look at doc/documentation.pdf for details.
+
+2022oct01
+version 0.11 is an update to configure/make processing to allow gimp-plugin-astronomy to be built and compile for use with GIMP v2.10
