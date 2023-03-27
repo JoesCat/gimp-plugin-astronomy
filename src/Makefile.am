@@ -5,8 +5,8 @@ ACLOCAL_AMFLAGS=-I m4 ${ACLOCAL}
 AM_CPPFLAGS = \
 	-DLOCALEDIR=\""$(LOCALEDIR)"\"	\
 	-DDATADIR=\""$(DATADIR)"\"	\
-	-I$(build_srcdir)		\
-	-I$(top_srcdir)			\
+	-I$(builddir)			\
+	-I$(srcdir)			\
 	@GIMP_CFLAGS@			\
 	-I$(includedir)
 
@@ -47,4 +47,3 @@ strip:
 	$(STRIP) ${builddir}/astronomy-merge
 	$(STRIP) ${builddir}/astronomy-star-rounding
 
-	
