@@ -1,6 +1,9 @@
+%bcond_with     gimp3
+
 %define         moname        %{name}
-%define         plugindir     %{_libdir}/gimp/2.0/plug-ins
-%define         scriptdir     %{_datadir}/gimp/2.0/scripts
+%define         abi_version   %{?with_gimp3:2.99}%{?!with_gimp3:2.0}
+%define         plugindir     %{_libdir}/gimp/%{abi_version}/plug-ins
+%define         scriptdir     %{_datadir}/gimp/%{abi_version}/scripts
 
 Name:           @PLUGIN_PACKAGE_NAME@
 Version:        @PLUGIN_VERSION@
@@ -8,6 +11,7 @@ Release:        0
 Summary:        Astronomy plugins for the GIMP graphic editor
 License:        GPLv2+
 Group:          Graphics/Editors and Converters
+
 URL:            http://github.com/JoesCat/gimp-plugin-astronomy
 Source0:        http://github.com/JoesCat/gimp-plugin-astronomy/releases/download/%{version}/%{name}-%{version}.tar.bz2
 
@@ -15,12 +19,22 @@ BuildRequires:	autoconf
 BuildRequires:	automake
 BuildRequires:	gcc
 BuildRequires:	make
-BuildRequires:  intltool
-BuildRequires:  gtk+2-devel
+BuildRequires:  gettext-devel
+%if %{with gimp3}
+BuildRequires:  pkgconfig(gimp-3.0)
+BuildRequires:  pkgconfig(gtk+-3.0)
+%else
+BuildRequires:  pkgconfig(gimp-2.0)
+BuildRequires:  pkgconfig(gtk+-2.0)
+%endif
 BuildRequires:  pkgconfig(fftw3)
 BuildRequires:  pkgconfig(gsl)
-BuildRequires:  pkgconfig(gimp-2.0)
+
+%if %{with gimp3}
+Requires:       gimp3 >= 2.99
+%else
 Requires:       gimp >= 2.6.0
+%endif
 Requires:       libfftw3
 #Requires:       libgsl25
 
@@ -37,6 +51,21 @@ synthetic stars distribution or synthetic galaxy images.
 %prep
 %setup -q
 
+%if %{with gimp3}
+# build for gimp-3.0
+sed -i \
+  -e 's/gimp-2.0/gimp-3.0/g' \
+  -e 's/gimpui-2.0/gimpui-3.0/g' \
+  -e 's/gimptool-2.0/gimptool-2.99/g' \
+  configure.ac
+%endif
+
+# make autoreconf happy
+sed -i \
+  -e 's/AM_GNU_GETTEXT_VERSION\(([*.*]*)\)/AM_GNU_GETTEXT_REQUIRE_VERSION\1/' \
+  -e 's/AM_GNU_GETTEXT_VERSION$/AM_GNU_GETTEXT_REQUIRE_VERSION([0.19.1])/' \
+  configure.ac
+
 %build
 aclocal --force
 autoconf -f
@@ -46,7 +75,8 @@ automake --add-missing
 
 
 %install
-%make_install
+%make_install INSTALLDIR="%{buildroot}/%{plugindir}" \
+      LOCALEDIR="%{buildroot}/%{_datadir}/locale"
 %find_lang %{moname}
 
 
@@ -54,7 +84,8 @@ automake --add-missing
 
 
 %files -f %{moname}.lang
-%doc README AUTHORS COPYING
+%license COPYING
+%doc README AUTHORS
 %doc documentation.pdf documentation.tex
 %{scriptdir}/background_gradient_batch.scm
 %{scriptdir}/border_information.scm
