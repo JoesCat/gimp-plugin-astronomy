@@ -1,7 +1,7 @@
 # -*- Autoconf -*-
 dnl Process this file with autoconf -f to produce a configure script.
 
-AC_PREREQ([2.68])
+AC_PREREQ([2.70])
 
 dnl Name your plug-in here
 m4_define([plugin_name], [gimp-plugin-astronomy])
@@ -24,7 +24,6 @@ AC_CANONICAL_HOST
 AC_CANONICAL_BUILD
 AC_USE_SYSTEM_EXTENSIONS
 AM_MAINTAINER_MODE([enable])
-AM_GNU_GETTEXT_VERSION
 AM_INIT_AUTOMAKE([foreign -Wall])
 
 m4_ifdef([AM_PROG_AR], [AM_PROG_AR])
@@ -123,11 +122,34 @@ AC_DEFINE(PLUGIN_MINOR_VERSION, ["plugin_minor_version"], [Plug-In minor version
 GETTEXT_PACKAGE=gimp-plugin-astronomy
 AC_SUBST(GETTEXT_PACKAGE)
 AC_DEFINE_UNQUOTED(GETTEXT_PACKAGE, "$GETTEXT_PACKAGE", [The gettext translation domain.])
+AM_GNU_GETTEXT_VERSION(0.21)
 AM_GNU_GETTEXT([external])
 
 AC_SUBST([PLUGIN_NAME],[plugin_name])
 AC_SUBST([PLUGIN_PACKAGE_NAME],[plugin_package_name])
 AC_SUBST([PLUGIN_VERSION],[plugin_version])
+
+dnl Do this here since automake can't process 'if/else/endif in Makefile.am
+SNIPPET1='
+noinst_PROGRAMS =
+ifeq ($(shell id -u),0)
+  bindir = $(GIMP_LIBDIR)/plug-ins/astronomy
+else
+  noinst_PROGRAMS += $(bin_PROGRAMS)
+endif
+'
+AC_SUBST([SNIPPET1])
+AM_SUBST_NOTMAKE([SNIPPET1])
+SNIPPET2='
+noinst_SCRIPTS =
+ifeq ($(shell id -u),0)
+  scmdir = $(GIMP_DATADIR)/scripts/astronomy
+else
+  noinst_SCRIPTS += $(scm_SCRIPTS)
+endif
+'
+AC_SUBST([SNIPPET2])
+AM_SUBST_NOTMAKE([SNIPPET2])
 
 AC_CONFIG_FILES([
 Makefile

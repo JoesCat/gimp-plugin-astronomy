@@ -13,8 +13,9 @@ AM_CPPFLAGS = \
 LDADD = $(LIBS) $(GSL_LIBS) $(FFTW_LIBS) $(GIMP_LIBS)
 
 bin_PROGRAMS = astronomy-alignment astronomy-merge astronomy-background-gradient astronomy-artificial-stars astronomy-artificial-galaxy astronomy-star-rounding
-
-bindir = ${GIMP_LIBDIR}/plug-ins
+# 'make distcheck' can't write to ${GIMP_LIBDIR}/plug-ins/ because of
+# directory permissions, therefore don't install programs unless you are root
+@SNIPPET1@
 
 astronomy_alignment_SOURCES = \
 	alignment.c

@@ -8,14 +8,14 @@
 # tools and you shouldn't use this script.  Just call ./configure
 # directly.
 
-PROJECT="GIMP Plug-In Astronomy"
+PROJECT="gimp-plugin-astronomy"
 TEST_TYPE=-f
 FILE=src/alignment.c
 
-AUTOCONF_REQUIRED_VERSION=2.54
-AUTOMAKE_REQUIRED_VERSION=1.10
-GLIB_REQUIRED_VERSION=2.0.0
-INTLTOOL_REQUIRED_VERSION=0.17
+AUTOCONF_REQUIRED_VERSION=2.70
+AUTOMAKE_REQUIRED_VERSION=1.16.3
+GLIB_REQUIRED_VERSION=2.66.8
+GETTEXT_REQUIRED_VERSION=0.21
 
 srcdir=`dirname $0`
 test -z "$srcdir" && srcdir=.
@@ -34,7 +34,7 @@ check_version ()
 
 echo
 echo "I am testing that you have the required versions of autoconf," 
-echo "automake, glib-gettextize and intltoolize..."
+echo "automake, glib-gettextize and gettext..."
 echo
 
 DIE=0
@@ -58,7 +58,7 @@ if (automake --version) < /dev/null > /dev/null 2>&1; then
    ACLOCAL=aclocal
 else
     echo
-    echo "  You must have automake 1.6 or newer installed to compile $PROJECT."
+    echo "  You must have automake 1.16.3 or newer installed to compile $PROJECT."
     echo "  Download the appropriate package for your distribution,"
     echo "  or get the source tarball at ftp://ftp.gnu.org/pub/gnu/automake/"
     DIE=1
@@ -83,16 +83,16 @@ else
     DIE=1
 fi
 
-echo -n "checking for intltool >= $INTLTOOL_REQUIRED_VERSION ... "
-if (intltoolize --version) < /dev/null > /dev/null 2>&1; then
-    VER=`intltoolize --version \
-         | grep intltoolize | sed "s/.* \([0-9.]*\)/\1/"`
-    check_version $VER $INTLTOOL_REQUIRED_VERSION
+echo -n "checking for gettext >= $GETTEXT_REQUIRED_VERSION ... "
+if (gettext --version) < /dev/null > /dev/null 2>&1; then
+    VER=`gettext --version \
+         | grep gettext | sed "s/.* \([0-9.]*\)/\1/"`
+    check_version $VER $GETTEXT_REQUIRED_VERSION
 else
     echo
-    echo "  You must have intltool installed to compile $PROJECT."
+    echo "  You must have gettext installed to compile $PROJECT."
     echo "  Get the latest version from"
-    echo "  ftp://ftp.gnome.org/pub/GNOME/sources/intltool/"
+    echo "  ftp.gnu.org/gnu/gettext/"
     DIE=1
 fi
 
@@ -155,11 +155,8 @@ fi
 # optionally feature autoheader
 (autoheader --version)  < /dev/null > /dev/null 2>&1 && autoheader || exit 1
 
+autoreconf -i || exit 1
 $AUTOMAKE --add-missing || exit 1
-autoconf || exit 1
-
-glib-gettextize --copy --force || exit 1
-intltoolize --copy --force --automake || exit 1
 
 cd $ORIGDIR
 
