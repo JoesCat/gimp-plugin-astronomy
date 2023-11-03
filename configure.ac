@@ -35,7 +35,9 @@ AC_PROG_LN_S
 AC_PROG_MKDIR_P
 AC_PATH_PROG([STRIP],[strip],[:])
 AC_PATH_PROG([GIMPTOOL],[gimptool-2.0],[:])
-AC_PATH_PROG([MSGFMT],[msgfmt],[msgfmt])
+AC_PATH_PROG([MSGFMT],[msgfmt],[:])
+AC_PATH_PROG([MSGINIT],[msginit],[:])
+AC_PATH_PROG([MSGMERGE],[msgmerge],[:])
 AC_PATH_PROG([XGETTEXT],[xgettext],[:])
 AC_CONFIG_HEADERS([src/config.h],[:])
 AC_PROG_INSTALL
@@ -53,6 +55,14 @@ AC_CHECK_HEADER([math.h],
     AC_SEARCH_LIBS([cos],[m],[have_libm=yes]))
 if test x"${have_libm}" != xyes; then
     AC_MSG_FAILURE([ERROR: Please install the Math library and math.h],[1])
+fi
+# Avoid being locked to a particular verion of gettext, use what's available now.
+have_gettext=no
+AC_CHECK_HEADERS([intl.h],[have_gettext=yes])
+AC_CHECK_FUNC([gettext],[have_gettext=yes])
+if test x"${have_gettext}" = xno; then
+	AC_SEARCH_LIBS([intl],[have_gettext=yes],[
+	AC_MSG_ERROR([ERROR: gettext() required! Please install libintl or GETTEXT Packages.])])
 fi
 
 # Check for package gsl, else gsl_version.h include file and gsl library. GPL
@@ -99,9 +109,10 @@ AC_SUBST(GIMP_DATADIR)
 
 AC_CHECK_FUNCS(bind_textdomain_codeset)
 
-LOCALEDIR='${datadir}/locale'
-DATADIR='${datadir}/${plugin_name}'
+dnl need to hardcode locale
+LOCALEDIR='/usr/share/locale'
 AC_SUBST(LOCALEDIR)
+DATADIR='${datadir}/${plugin_name}'
 AC_SUBST(DATADIR)
 
 ACLOCAL="$ACLOCAL $ACLOCAL_FLAGS"
@@ -113,7 +124,7 @@ AM_CONDITIONAL([HAVEMSOS],[test x"${msos}" == xyes])
 CPPFLAGS="${CPPFLAGS} AS_ESCAPE([-I${top_builddir}]) AS_ESCAPE([-I${top_srcdir}])"
 AC_SUBST([CPPFLAGS],["${CPPFLAGS}"])
 
-AC_DEFINE(PLUGIN_NAME, ["plugin_package_name"], [Plug-In package name])
+AC_DEFINE(PLUGIN_PACKAGE_NAME, ["plugin_package_name"], [Plug-In package name])
 AC_DEFINE(PLUGIN_VERSION, ["plugin_version"], [Plug-In version])
 
 AC_DEFINE(PLUGIN_MAJOR_VERSION, ["plugin_major_version"], [Plug-In major version])
@@ -122,8 +133,6 @@ AC_DEFINE(PLUGIN_MINOR_VERSION, ["plugin_minor_version"], [Plug-In minor version
 GETTEXT_PACKAGE=gimp-plugin-astronomy
 AC_SUBST(GETTEXT_PACKAGE)
 AC_DEFINE_UNQUOTED(GETTEXT_PACKAGE, "$GETTEXT_PACKAGE", [The gettext translation domain.])
-AM_GNU_GETTEXT_VERSION(0.21)
-AM_GNU_GETTEXT([external])
 
 AC_SUBST([PLUGIN_NAME],[plugin_name])
 AC_SUBST([PLUGIN_PACKAGE_NAME],[plugin_package_name])
@@ -133,7 +142,7 @@ dnl Do this here since automake can't process 'if/else/endif in Makefile.am
 SNIPPET1='
 noinst_PROGRAMS =
 ifeq ($(shell id -u),0)
-  bindir = $(GIMP_LIBDIR)/plug-ins/astronomy
+  bindir = $(GIMP_LIBDIR)/plug-ins
 else
   noinst_PROGRAMS += $(bin_PROGRAMS)
 endif
@@ -143,20 +152,30 @@ AM_SUBST_NOTMAKE([SNIPPET1])
 SNIPPET2='
 noinst_SCRIPTS =
 ifeq ($(shell id -u),0)
-  scmdir = $(GIMP_DATADIR)/scripts/astronomy
+  scmdir = $(GIMP_DATADIR)/scripts
 else
   noinst_SCRIPTS += $(scm_SCRIPTS)
 endif
 '
 AC_SUBST([SNIPPET2])
 AM_SUBST_NOTMAKE([SNIPPET2])
+SNIPPET3='
+gimplocalesdir =
+ifeq ($(shell id -u),0)
+  gimplocalesdir = $(LOCALESDIR)
+else
+  gimplocalesdir += $(localedir)
+endif
+'
+AC_SUBST([SNIPPET3])
+AM_SUBST_NOTMAKE([SNIPPET3])
 
 AC_CONFIG_FILES([
 Makefile
 doc/Makefile
 scripts/Makefile
 src/Makefile
-po/Makefile.in
+po/Makefile
 rpm/gimp-plugin-astronomy.spec
 ])
 
@@ -168,7 +187,9 @@ Configuration:
 
   Source code location	${srcdir}
   Build code location	${builddir}
-  bindir		${bindir}
+  bin plug-in dir	${GIMP_LIBDIR}/plug-ins
+  scripts plug-in dir	${GIMP_DATADIR}/scripts
+  gimp locale dir	${LOCALEDIR}
   Compiler		${CC}
   CPPFLAGS		${CPPFLAGS}
   GSL_LIBS		${GSL_LIBS}

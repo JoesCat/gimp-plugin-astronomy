@@ -60,15 +60,8 @@ sed -i \
   configure.ac
 %endif
 
-# make autoreconf happy
-sed -i \
-  -e 's/AM_GNU_GETTEXT_VERSION\(([*.*]*)\)/AM_GNU_GETTEXT_REQUIRE_VERSION\1/' \
-  -e 's/AM_GNU_GETTEXT_VERSION$/AM_GNU_GETTEXT_REQUIRE_VERSION([0.19.1])/' \
-  configure.ac
-
 %build
-aclocal --force
-autoconf -f
+autoreconf -f
 automake --add-missing
 %configure
 %make_build
