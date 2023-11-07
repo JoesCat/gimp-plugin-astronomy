@@ -1,7 +1,14 @@
-LANGUAGES = de ru
-PO_FILES = de.po ru.po
+LANGUAGES = de pt ru
+PO_FILES = de.po pt.po ru.po
 
 # END CONFIG ##################################################################
+# To create a new pot file, you need to cd into this po directory first:
+#   cd po; del gimp-plugin-astronomy.pot; make update-pot
+#
+# To update the existing po files you need to cd into po directory and then do:
+#   cd po; make update-po
+
+@SNIPPET3@
 
 .PHONY: all install install-user uninstall uninstall-user clean $(LANGUAGES)
 .PHONY: update-po update-pot
@@ -22,17 +29,15 @@ $(PO_FILES): $(GETTEXT_PACKAGE).pot
 	else $(MSGFMT) -l $(subst .po,,$@) -o $(builddir)/$@ -i $^; \
 	fi
 
-@SNIPPET3@
-
 install-data-local: $(LANGUAGES)
 	for L in $(LANGUAGES); \
-	do $(MKDIR_P) -p "$(DESTDIR)$(gimplocalesdir)/$$L/LC_MESSAGES"; \
-	install -v -m 0644 $(builddir)/$$L.mo "$(DESTDIR)$(gimplocalesdir)/$$L/LC_MESSAGES/$(GETTEXT_PACKAGE).mo"; \
+	do $(MKDIR_P) -p "$(DESTDIR)$(gimplocaledir)/$$L/LC_MESSAGES"; \
+	install -v -m 0644 $(builddir)/$$L.mo "$(DESTDIR)$(gimplocaledir)/$$L/LC_MESSAGES/$(GETTEXT_PACKAGE).mo"; \
 	done
 
 uninstall-local: $(LANGUAGES)
 	for L in $(LANGUAGES); \
-	do rm -vf "$(DESTDIR)$(gimplocalesdir)/$$L/LC_MESSAGES/$(GETTEXT_PACKAGE).mo"; \
+	do rm -vf "$(DESTDIR)$(gimplocaledir)/$$L/LC_MESSAGES/$(GETTEXT_PACKAGE).mo"; \
 	done
 
 clean-local:
@@ -44,9 +49,12 @@ install-user:
 uninstall-user:
 	$(warning Will not uninstall gettext files for user installation!)
 
-$(GETTEXT_PACKAGE).pot: $(top_srcdir)/scripts/*.scm $(top_srcdir)/src/*.c
-	$(XGETTEXT) -C -k_ -kN_ -d $(GETTEXT_PACKAGE) -o $@ $^
 
 update-pot: $(GETTEXT_PACKAGE).pot
+
+$(GETTEXT_PACKAGE).pot:
+	$(XGETTEXT) -k_ -k_\" -d $(GETTEXT_PACKAGE) -o $@ \
+	--package-version=$(PLUGIN_VERSION) --msgid-bugs-address=$(PLUGIN_EMAIL) \
+	../scripts/*.scm ../src/*.c
 
 EXTRA_DIST = $(PO_FILES) $(GETTEXT_PACKAGE).pot

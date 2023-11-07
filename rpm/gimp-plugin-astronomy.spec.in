@@ -44,7 +44,7 @@ Gimp Astronomy is a set of plug-ins for the Gimp graphic editor
 intended for astronomical image processing. They support various basic
 and more advanced tasks such as aligning and stacking images with
 arithmetic, geometric, median, or sigma mean, removing dark frames and
-dividing by a flat field. Some plug-gins are designed for creating
+dividing by a flat field. Some plug-ins are designed for creating
 synthetic stars distribution or synthetic galaxy images.
 
 

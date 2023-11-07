@@ -12,10 +12,11 @@ m4_define([plugin_minor_version], [11])
 
 m4_define([plugin_version], [plugin_major_version.plugin_minor_version])
 m4_define([plugin_package_name], [gimp-plugin-astronomy])
+m4_define([plugin_package_home], [https://github.com/JoesCat/gimp-plugin-astronomy])
+m4_define([plugin_package_email], [https://github.com/JoesCat/gimp-plugin-astronomy/issues/])
 
-AC_INIT([plugin_name],[plugin_version],
-   [https://github.com/JoesCat/gimp-plugin-astronomy/issues/],[plugin_package_name],
-   [https://github.com/JoesCat/gimp-plugin-astronomy])
+AC_INIT([plugin_name],[plugin_version],[plugin_package_email],
+   [plugin_package_name],[plugin_package_home])
 
 AC_CONFIG_SRCDIR([src/alignment.c])
 AC_CONFIG_MACRO_DIR([m4])
@@ -137,6 +138,7 @@ AC_DEFINE_UNQUOTED(GETTEXT_PACKAGE, "$GETTEXT_PACKAGE", [The gettext translation
 AC_SUBST([PLUGIN_NAME],[plugin_name])
 AC_SUBST([PLUGIN_PACKAGE_NAME],[plugin_package_name])
 AC_SUBST([PLUGIN_VERSION],[plugin_version])
+AC_SUBST([PLUGIN_EMAIL],[plugin_package_email])
 
 dnl Do this here since automake can't process 'if/else/endif in Makefile.am
 SNIPPET1='
@@ -160,11 +162,9 @@ endif
 AC_SUBST([SNIPPET2])
 AM_SUBST_NOTMAKE([SNIPPET2])
 SNIPPET3='
-gimplocalesdir =
+gimplocaledir = $(localedir)
 ifeq ($(shell id -u),0)
-  gimplocalesdir = $(LOCALESDIR)
-else
-  gimplocalesdir += $(localedir)
+  gimplocaledir = $(LOCALEDIR)
 endif
 '
 AC_SUBST([SNIPPET3])
