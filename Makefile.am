@@ -7,8 +7,6 @@ ACLOCAL_AMFLAGS = -I m4
 EXTRA_DIST = \
 	ABOUT-NLS \
 	autogen.sh \
-	Makefile.mingw \
-	config.h.win32 \
 	rpm/gimp-plugin-astronomy.spec.in
 
 nodist_EXTRA_DATA = .git .github
