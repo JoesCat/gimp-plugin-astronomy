@@ -131,7 +131,7 @@ AC_DEFINE(PLUGIN_VERSION, ["plugin_version"], [Plug-In version])
 AC_DEFINE(PLUGIN_MAJOR_VERSION, ["plugin_major_version"], [Plug-In major version])
 AC_DEFINE(PLUGIN_MINOR_VERSION, ["plugin_minor_version"], [Plug-In minor version])
 
-GETTEXT_PACKAGE=gimp-plugin-astronomy
+GETTEXT_PACKAGE=gimp20-plugin-astronomy
 AC_SUBST(GETTEXT_PACKAGE)
 AC_DEFINE_UNQUOTED(GETTEXT_PACKAGE, "$GETTEXT_PACKAGE", [The gettext translation domain.])
 

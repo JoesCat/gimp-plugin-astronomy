@@ -1,6 +1,6 @@
 %bcond_with     gimp3
 
-%define         moname        %{name}
+%define         moname        %{?with_gimp3:gimp30-plugin-astronomy}%{?!with_gimp3:gimp20-plugin-astronomy}
 %define         abi_version   %{?with_gimp3:2.99}%{?!with_gimp3:2.0}
 %define         plugindir     %{_libdir}/gimp/%{abi_version}/plug-ins
 %define         scriptdir     %{_datadir}/gimp/%{abi_version}/scripts
