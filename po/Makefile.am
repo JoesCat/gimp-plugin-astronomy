@@ -1,7 +1,6 @@
 LANGUAGES = de pt ru
 PO_FILES = de.po pt.po ru.po
 
-# END CONFIG ##################################################################
 # To create a new pot file, you need to cd into this po directory first:
 #   cd po; del gimp-plugin-astronomy.pot; make update-pot
 #

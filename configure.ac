@@ -60,10 +60,18 @@ fi
 # Avoid being locked to a particular verion of gettext, use what's available now.
 have_gettext=no
 AC_CHECK_HEADERS([intl.h],[have_gettext=yes])
-AC_CHECK_FUNC([gettext],[have_gettext=yes])
+AC_CHECK_FUNC([gettext],[have_gettext=yes],[have_gettext=no])
+AC_CHECK_FUNC([bind_textdomain_codeset],,[have_gettext=no])
+AC_CHECK_FUNC([textdomain],,[have_gettext=no])
 if test x"${have_gettext}" = xno; then
 	AC_SEARCH_LIBS([intl],[have_gettext=yes],[
 	AC_MSG_ERROR([ERROR: gettext() required! Please install libintl or GETTEXT Packages.])])
+fi
+GETTEXT_PACKAGE=gimp20-plugin-astronomy
+AC_SUBST(GETTEXT_PACKAGE)
+AC_DEFINE_UNQUOTED(GETTEXT_PACKAGE, "$GETTEXT_PACKAGE", [The gettext translation domain.])
+if test x"${have_gettext}" = xyes; then
+  AC_DEFINE([HAVE_GETTEXT],1,[Enable use of local languages])
 fi
 
 # Check for package gsl, else gsl_version.h include file and gsl library. GPL
@@ -131,10 +139,6 @@ AC_DEFINE(PLUGIN_VERSION, ["plugin_version"], [Plug-In version])
 AC_DEFINE(PLUGIN_MAJOR_VERSION, ["plugin_major_version"], [Plug-In major version])
 AC_DEFINE(PLUGIN_MINOR_VERSION, ["plugin_minor_version"], [Plug-In minor version])
 
-GETTEXT_PACKAGE=gimp20-plugin-astronomy
-AC_SUBST(GETTEXT_PACKAGE)
-AC_DEFINE_UNQUOTED(GETTEXT_PACKAGE, "$GETTEXT_PACKAGE", [The gettext translation domain.])
-
 AC_SUBST([PLUGIN_NAME],[plugin_name])
 AC_SUBST([PLUGIN_PACKAGE_NAME],[plugin_package_name])
 AC_SUBST([PLUGIN_VERSION],[plugin_version])
@@ -142,21 +146,19 @@ AC_SUBST([PLUGIN_EMAIL],[plugin_package_email])
 
 dnl Do this here since automake can't process 'if/else/endif in Makefile.am
 SNIPPET1='
-noinst_PROGRAMS =
 ifeq ($(shell id -u),0)
   bindir = $(GIMP_LIBDIR)/plug-ins
 else
-  noinst_PROGRAMS += $(bin_PROGRAMS)
+  bindir = $(libdir)/gimp/2.0/plug-ins
 endif
 '
 AC_SUBST([SNIPPET1])
 AM_SUBST_NOTMAKE([SNIPPET1])
 SNIPPET2='
-noinst_SCRIPTS =
 ifeq ($(shell id -u),0)
   scmdir = $(GIMP_DATADIR)/scripts
 else
-  noinst_SCRIPTS += $(scm_SCRIPTS)
+  scmdir = $(datadir)/gimp/2.0/scripts
 endif
 '
 AC_SUBST([SNIPPET2])
